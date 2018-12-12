@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,height=device-height">
+  <title>装载数据</title>
+  <style>
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    html,
+    body {
+      overflow: hidden;
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="c1"></div>
+  <script>
+    /*Fixing iframe window.innerHeight 0 issue in Safari*/
+    document.body.clientHeight;
+  </script>
+  <script src="../../g2.js"></script>
+  <script src="../../data-set.min.js"></script>
+  <script src="../../jquery-3.3.1.min.js"></script>
+  <script>
+    const data = [{
+        genre: 'Sports',
+        sold: 275
+      },
+      {
+        genre: 'Strategy',
+        sold: 115
+      },
+      {
+        genre: 'Action',
+        sold: 120
+      },
+      {
+        genre: 'Shooter',
+        sold: 350
+      },
+      {
+        genre: 'Other',
+        sold: 150
+      }
+    ]; // G2 对数据源格式的要求，仅仅是 JSON 数组，数组的每个元素是一个标准 JSON 对象。
+
+    // Step 1: 创建 Chart 对象
+    // 方式一： 设置 animate 属性
+    const chart = new G2.Chart({
+      container: 'c1', // 指定图表容器 ID
+      //width: 600, // 指定图表宽度
+      forceFit: true,
+      height: 500, // 指定图表高度
+      //animate: false, // 关闭图表动画
+      padding: [20, 20, 95, 80] // 上，右，下，左      
+    });
+
+    // 方式二： 手动调用 animate 函数
+    //chart.animate(false); // 关闭动画
+
+    //chart.forceFit(); // 手动调用自适应函数
+
+    // Step 2: 载入数据源
+    //方式 2：调用 chart.source(data) 方法，每个字段的列定义也可以在这里传入
+    chart.source(data, {
+      genre: {
+        type: 'cat'//分类类型数据的度量。除了拥有通用的度量属性外，用户还可以设置 values 属性
+      },
+      sold: {
+        min: 0
+      }
+    });
+
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.interval().position('genre*sold').color('genre')
+
+    // Step 4: 渲染图表
+    chart.render();
+  </script>
+</body>
+
+</html>

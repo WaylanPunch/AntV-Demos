@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,height=device-height">
+  <title>装载数据</title>
+  <style>
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    html,
+    body {
+      overflow: hidden;
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="c1"></div>
+  <script>
+    /*Fixing iframe window.innerHeight 0 issue in Safari*/
+    document.body.clientHeight;
+  </script>
+  <script src="../../g2.js"></script>
+  <script src="../../data-set.min.js"></script>
+  <script src="../../jquery-3.3.1.min.js"></script>
+  <script>
+    // G2 对数据源格式的要求，仅仅是 JSON 数组，数组的每个元素是一个标准 JSON 对象。
+    // Step 1: 创建 Chart 对象
+    const chart = new G2.Chart({
+      container: 'c1', // 指定图表容器 ID
+      //width: 600, // 指定图表宽度
+      forceFit: true,
+      height: 500, // 指定图表高度
+      padding: [20, 20, 95, 80], // 上，右，下，左
+      data: [{ //方式 1：data 属性传入
+          genre: 'Sports',
+          sold: 275
+        },
+        {
+          genre: 'Strategy',
+          sold: 115
+        },
+        {
+          genre: 'Action',
+          sold: 120
+        },
+        {
+          genre: 'Shooter',
+          sold: 350
+        },
+        {
+          genre: 'Other',
+          sold: 150
+        }
+      ]
+    });
+
+    //chart.forceFit(); // 手动调用自适应函数
+
+    // Step 2: 载入数据源
+    //chart.source(data);
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.interval().position('genre*sold').color('genre')
+    // Step 4: 渲染图表
+    chart.render();
+  </script>
+</body>
+
+</html>

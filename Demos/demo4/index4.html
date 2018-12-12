@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,height=device-height">
+  <title>装载数据 - 清理图形语法</title>
+  <style>
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    html,
+    body {
+      overflow: hidden;
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="c1"></div>
+  <script>
+    /*Fixing iframe window.innerHeight 0 issue in Safari*/
+    document.body.clientHeight;
+  </script>
+  <script src="../../g2.js"></script>
+  <script src="../../data-set.min.js"></script>
+  <script src="../../jquery-3.3.1.min.js"></script>
+  <script>
+    function getRandomValue(max) {
+      return Math.random(1) * max;
+    }
+
+    const data = [{
+        genre: 'Sports',
+        sold: getRandomValue(350)
+      },
+      {
+        genre: 'Strategy',
+        sold: getRandomValue(350)
+      },
+      {
+        genre: 'Action',
+        sold: getRandomValue(350)
+      },
+      {
+        genre: 'Shooter',
+        sold: getRandomValue(350)
+      },
+      {
+        genre: 'Other',
+        sold: getRandomValue(350)
+      }
+    ]; // G2 对数据源格式的要求，仅仅是 JSON 数组，数组的每个元素是一个标准 JSON 对象。
+
+    // Step 1: 创建 Chart 对象
+    // 方式一： 设置 animate 属性
+    const chart = new G2.Chart({
+      container: 'c1', // 指定图表容器 ID
+      //width: 600, // 指定图表宽度
+      forceFit: true,
+      height: 500, // 指定图表高度
+      //animate: false, // 关闭图表动画
+      padding: [20, 20, 95, 80] // 上，右，下，左      
+    });
+
+    // 方式二： 手动调用 animate 函数
+    //chart.animate(false); // 关闭动画
+
+    //chart.forceFit(); // 手动调用自适应函数
+
+    // Step 2: 载入数据源
+    //方式 2：调用 chart.source(data) 方法，每个字段的列定义也可以在这里传入
+    chart.source(data, {
+      genre: {
+        type: 'cat' //分类类型数据的度量。除了拥有通用的度量属性外，用户还可以设置 values 属性
+      },
+      sold: {
+        min: 0
+      }
+    });
+
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.interval().position('genre*sold').color('genre');
+
+    // Step 4: 渲染图表
+    chart.render();
+
+    //更新数据
+    var refreshCount = 0;
+    refreshData = setInterval(function () {
+      var newData = [{
+          genre: 'Sports',
+          sold: getRandomValue(350)
+        },
+        {
+          genre: 'Strategy',
+          sold: getRandomValue(350)
+        },
+        {
+          genre: 'Action',
+          sold: getRandomValue(350)
+        },
+        {
+          genre: 'Shooter',
+          sold: getRandomValue(350)
+        },
+        {
+          genre: 'Other',
+          sold: getRandomValue(350)
+        }
+      ];
+
+      //如果需要马上更新图表，使用 chart.changeData(data) 即可
+      //chart.changeData(newData);
+
+      //如果仅仅是更新数据，而不需要马上更新图表，可以调用 chart.source(data)，需要更新图表时调用 chart.repaint()
+      chart.source(newData);
+
+      chart.guide().clear(); // 清理guide
+      chart.repaint();
+      refreshCount += 1;
+
+      console.log("The " + refreshCount + " Times To Refresh Data...")
+
+      if (10 === refreshCount) {
+        clearInterval(refreshData);
+        chart.clear(); // 清理所有
+        chart.source(data, {
+          genre: {
+            type: 'cat' 
+          },
+          sold: {
+            min: 0
+          }
+        }); // 重新加载数据
+        chart.interval().position('genre*sold').color('genre');
+        chart.render();
+        console.log("Stop Refreshing Data...")
+      }
+    }, 2000);
+  </script>
+</body>
+
+</html>
